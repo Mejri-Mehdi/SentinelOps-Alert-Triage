@@ -1,0 +1,31 @@
+# Virtual Environment
+venv/
+env/
+ENV/
+
+# Python Cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# SQLite Database & Storage
+*.db
+*.sqlite3
+*.joblib
+
+# Testing & Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Data Files (Keep git light, alerts are generated dynamically)
+data/alerts.jsonl
+
+# IDE & OS
+.vscode/
+.idea/
+*.swp
+Thumbs.db
+.DS_Store
