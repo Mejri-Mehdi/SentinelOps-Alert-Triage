@@ -1,0 +1,9 @@
+Metadata-Version: 2.4
+Name: sentinelops
+Version: 1.0.0
+Summary: AI-Powered Alert Triage & Response Platform
+Author: Security Engineering
+Requires-Python: >=3.10
+Dynamic: author
+Dynamic: requires-python
+Dynamic: summary

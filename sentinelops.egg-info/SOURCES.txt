@@ -1,0 +1,6 @@
+README.md
+setup.py
+sentinelops.egg-info/PKG-INFO
+sentinelops.egg-info/SOURCES.txt
+sentinelops.egg-info/dependency_links.txt
+sentinelops.egg-info/top_level.txt
