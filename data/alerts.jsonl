@@ -4998,4 +4998,3 @@
 {"alert_id": "ALT-87B1C301A1", "timestamp": "2026-09-05T13:12:13.054484", "severity": "high", "source_ip": "45.154.255.89", "user": "alice.smith", "host": "WS-HR-07", "alert_type": "failed_login", "description": "Multiple failed authentication attempts detected for user alice.smith from 45.154.255.89"}
 {"alert_id": "ALT-C14D1168DA", "timestamp": "2026-09-05T13:12:20.054484", "severity": "high", "source_ip": "45.154.255.89", "user": "alice.smith", "host": "WS-HR-07", "alert_type": "failed_login", "description": "Multiple failed authentication attempts detected for user alice.smith from 45.154.255.89"}
 {"alert_id": "ALT-E734BB75C9", "timestamp": "2026-09-05T13:13:35.054484", "severity": "low", "source_ip": "10.0.10.36", "user": "eve.johnson", "host": "WS-FIN-02", "alert_type": "failed_login", "description": "Single failed login attempt due to expired password"}
-
