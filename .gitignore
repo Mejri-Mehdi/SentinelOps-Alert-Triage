@@ -20,8 +20,6 @@ __pycache__/
 .coverage
 htmlcov/
 
-# Data Files (Keep git light, alerts are generated dynamically)
-data/alerts.jsonl
 
 # IDE & OS
 .vscode/
