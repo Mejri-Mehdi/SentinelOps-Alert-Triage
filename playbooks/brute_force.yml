@@ -1,0 +1,23 @@
+id: brute_force_response
+name: Brute Force & Credential Stuffing Containment
+enabled: true
+min_risk_score: 45
+severity_threshold: medium
+triggers:
+  - type: alert_type
+    alert_type: failed_login
+    count: 5
+    window_minutes: 10
+actions:
+  - type: notify
+    channel: slack
+    message: "Brute force attack detected against user {{user}} from IP {{source_ip}} (Case: {{case_id}}, Risk: {{risk_score}})"
+  - type: contain
+    action: disable_user
+    target: "{{user}}"
+  - type: enrich
+    source: virustotal
+    query: "{{source_ip}}"
+  - type: contain
+    action: block_ip
+    target: "{{source_ip}}"
