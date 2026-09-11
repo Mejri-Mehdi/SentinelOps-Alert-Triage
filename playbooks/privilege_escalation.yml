@@ -1,0 +1,17 @@
+id: privilege_escalation_response
+name: Unauthorized Privilege Escalation Containment
+enabled: true
+min_risk_score: 55
+severity_threshold: high
+triggers:
+  - type: alert_type
+    alert_type: privilege_escalation
+    count: 1
+    window_minutes: 15
+actions:
+  - type: contain
+    action: disable_user
+    target: "{{user}}"
+  - type: notify
+    channel: slack
+    message: "Privilege escalation detected on {{host}} involving account {{user}}. Account suspended pending investigation. Case: {{case_id}}"
