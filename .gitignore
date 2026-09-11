@@ -13,7 +13,6 @@ __pycache__/
 # SQLite Database & Storage
 *.db
 *.sqlite3
-*.joblib
 
 # Testing & Coverage
 .pytest_cache/
