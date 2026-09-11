@@ -1,0 +1,20 @@
+id: lateral_movement_response
+name: Lateral Movement & Remote Services Containment
+enabled: true
+min_risk_score: 65
+severity_threshold: high
+triggers:
+  - type: alert_type
+    alert_type: lateral_movement
+    count: 2
+    window_minutes: 20
+actions:
+  - type: contain
+    action: isolate_host
+    target: "{{host}}"
+  - type: contain
+    action: disable_user
+    target: "{{user}}"
+  - type: notify
+    channel: slack
+    message: "Lateral movement pattern identified across servers originating from {{host}} (Account: {{user}}). Case: {{case_id}}"
