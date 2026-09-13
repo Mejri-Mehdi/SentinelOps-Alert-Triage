@@ -379,4 +379,4 @@ python -m pytest tests/ -v --cov=src --cov-report=term-missing
 ---
 
 
-<p align="center"><sub>Made with ❤️ by <a href="https://github.com/Mejri-Mehdi">Mejri Mehdi</a></sub></p> 
+<p align="center"><sub>Made with ❤️ by <a href="https://github.com/Mejri-Mehdi">Mejri Mehdi</a></sub></p>
