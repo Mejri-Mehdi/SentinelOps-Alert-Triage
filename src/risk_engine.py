@@ -132,28 +132,30 @@ class RiskEngine:
                 self.scaler = None
 
     def calculate_rule_score(self, case: Case) -> float:
-        """Deterministic rule-based risk calculation (0 to 70 points max)."""
+        """Deterministic rule-based risk calculation (calibrated up to 85 pts max)."""
         alerts = self.session.query(Alert).filter(Alert.case_id == case.id).all()
         if not alerts:
             return 0.0
 
-        # 1. Base Severity Score
+        # 1. Base Severity Score (Critical=50, High=35, Medium=20, Low=10)
         sev_rank = {"critical": 50, "high": 35, "medium": 20, "low": 10, "info": 0}
         base_sev_score = max(sev_rank.get(a.severity.lower(), 10) for a in alerts)
 
-        # 2. Threat Category Weight
+        # 2. Threat Category Weight (Malware=30, Exfil=30, etc.)
         threat_type_score = max(ALERT_TYPE_WEIGHTS.get(a.alert_type, 5) for a in alerts)
 
-        # 3. Volume Burst Multiplier
+        # 3. Volume Burst Multiplier (rewards rapid multi-alert attacks)
         count = len(alerts)
-        volume_boost = min(15.0, math.log2(count + 1) * 3.5)
+        volume_boost = min(15.0, count * 2.5) if count > 1 else 0.0
 
         # 4. Multi-Entity Blast Radius Bonus
         unique_hosts = len({a.host for a in alerts if a.host})
         blast_bonus = 5.0 if unique_hosts > 1 else 0.0
 
-        raw_score = (base_sev_score * 0.45) + (threat_type_score * 0.35) + volume_boost + blast_bonus
-        return min(70.0, round(raw_score, 2))
+        # Combine: Critical (50) + Malware (30*0.7=21) + 5 alerts volume (12.5) = 83.5 -> Critical!
+        raw_score = base_sev_score + (threat_type_score * 0.7) + volume_boost + blast_bonus
+        return min(85.0, round(raw_score, 2))
+
 
     def _extract_case_features(self, case: Case, alerts: list[Alert]) -> list[float]:
         """Extract numerical feature vector representing case behavior."""
