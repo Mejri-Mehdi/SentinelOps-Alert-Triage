@@ -22,15 +22,13 @@ Security Operations Centers (SOCs) are burdened by high-volume telemetry ingesti
 
 **SentinelOps** is an autonomous, production-ready Security Orchestration, Automation, and Response (SOAR) and correlation platform. It ingests disparate security telemetry, normalizes events to a standard schema, deduplicates bursts via MD5 fingerprinting, correlates multi-stage attacks across a sliding temporal window, scores incident risk using a hybrid heuristic-ML engine, and dispatches automated containment actions via declarative YAML playbooks.
 
-<!-- SCREENSHOT PLACEHOLDER 1 -->
-```
-+----------------------------------------------------------------------------------------------------+
-|                                    [ SCREENSHOT PLACEHOLDER 1 ]                                    |
-|                                                                                                    |
-|                       Drop your Streamlit "Executive Overview" image here:                         |
-|                                docs/screenshots/executive_overview.png                             |
-+----------------------------------------------------------------------------------------------------+
-```
+<!-- SCREENSHOT PLACEHOLDER 1 -->  
+
+---
+![alt text](<Screenshot 2026-09-13 200438.png>)
+---
+
+
 <p align="center">
   <em>Figure 1.0: SentinelOps Executive Console — Live Telemetry Posture, Composite Risk Distribution, and Threat Severity Metrics.</em>
 </p>
@@ -123,14 +121,15 @@ Security attacks are rarely isolated incidents; they represent a sequence of act
 If an incoming alert shares any key pivot (`source_ip`, `user`, or `host`) with an active case within `Δt`, the alert is attached to the existing case, updating the case blast-radius metrics and escalating priority when higher severities are detected.
 
 <!-- SCREENSHOT PLACEHOLDER 2 -->
-```
-+----------------------------------------------------------------------------------------------------+
-|                                    [ SCREENSHOT PLACEHOLDER 2 ]                                    |
-|                                                                                                    |
-|                  Drop your Streamlit "Incident Case Investigation" image here:                     |
-|                                docs/screenshots/case_investigation.png                             |
-+----------------------------------------------------------------------------------------------------+
-```
+
+---
+![alt text](<Screenshot 2026-09-13 200450-1.png>)
+---
+![alt text](<Screenshot 2026-09-13 200504-1.png>)
+---
+![alt text](<Screenshot 2026-09-13 200522-1.png>)
+---
+
 <p align="center">
   <em>Figure 2.0: Incident Drill-Down Console — Chronological Attack Timeline, Pivot Entity Graph, and Associated Alerts.</em>
 </p>
@@ -194,14 +193,13 @@ actions:
 * `notify_slack`: Broadcasts high-priority operational alert cards to incident channels.
 
 <!-- SCREENSHOT PLACEHOLDER 3 -->
-```
-+----------------------------------------------------------------------------------------------------+
-|                                    [ SCREENSHOT PLACEHOLDER 3 ]                                    |
-|                                                                                                    |
-|                  Drop your Streamlit "Automated SOAR Actions Audit" image here:                    |
-|                                  docs/screenshots/soar_audit.png                                   |
-+----------------------------------------------------------------------------------------------------+
-```
+
+---
+![alt text](<Screenshot 2026-09-13 200533-1.png>)
+---
+![alt text](<Screenshot 2026-09-13 200547-1.png>)
+---
+
 <p align="center">
   <em>Figure 3.0: Immutable SOAR Audit Trail — Persistent Execution History, Target Remediation, and Containment States.</em>
 </p>
@@ -226,14 +224,12 @@ Every ingested alert type is enriched at runtime with industry-standard MITRE AT
 | **Exfiltration** | T1048 | Exfiltration Over Alternative Protocol | `data_exfiltration` |
 
 <!-- SCREENSHOT PLACEHOLDER 4 -->
-```
-+----------------------------------------------------------------------------------------------------+
-|                                    [ SCREENSHOT PLACEHOLDER 4 ]                                    |
-|                                                                                                    |
-|                  Drop your Streamlit "MITRE ATT&CK Matrix Heatmap" image here:                     |
-|                               docs/screenshots/mitre_coverage.png                                  |
-+----------------------------------------------------------------------------------------------------+
-```
+
+---
+![alt text](<Screenshot 2026-09-13 200527-1.png>)
+---
+---
+
 <p align="center">
   <em>Figure 4.0: Tactical Enterprise Heatmap — Adversary Technique and Tactic Frequency Distribution.</em>
 </p>
@@ -286,7 +282,7 @@ sentinelops-alert-triage/
 ### 7.2 Clone & Environment Initialization
 ```bash
 # Clone the repository
-git clone https://github.com/YOUR_USERNAME/sentinelops-alert-triage.git
+git clone https://github.com/Mehdi-Mejri/sentinelops-alert-triage.git
 cd sentinelops-alert-triage
 
 # Create isolated virtual environment
@@ -302,6 +298,12 @@ source venv/bin/activate
 pip install -r requirements.txt
 pip install -e .
 ```
+
+---
+![alt text](<Screenshot 2026-09-04 181019.png>)
+---
+![alt text](<Screenshot 2026-09-04 181329.png>)
+---
 
 ### 7.3 Execute the End-to-End Pipeline
 ```bash
@@ -341,10 +343,29 @@ streamlit run dashboard/app.py
 Open your browser to `http://localhost:8501` to access all operational views.
 
 ---
+![alt text](<Screenshot 2026-09-13 200225.png>)
+---
 
 ## 8. Verification & Test Suite
 
 SentinelOps enforces high test coverage across all critical correlation and containment pathways using an isolated in-memory SQLite database:
+
+---
+![alt text](<Screenshot 2026-09-04 202956.png>)
+---
+![alt text](<Screenshot 2026-09-05 141505.png>)
+---
+![alt text](<Screenshot 2026-09-06 201509.png>)
+---
+![alt text](<Screenshot 2026-09-07 124901.png>)
+---
+![alt text](<Screenshot 2026-09-11 141516.png>)
+---
+![alt text](<Screenshot 2026-09-11 194145.png>)
+---
+![alt text](<Screenshot 2026-09-13 195646.png>)
+---
+
 
 ```bash
 python -m pytest tests/ -v --cov=src --cov-report=term-missing
@@ -378,7 +399,8 @@ tests/test_risk_engine.py::test_train_model PASSED                        [100%]
 ```
 
 ---
+![alt text](<Screenshot 2026-09-13 201551.png>)
+---
+![alt text](<Screenshot 2026-09-13 201531.png>)
+---
 
-## 9. License
-
-Distributed under the **MIT License**. Engineered for portfolio evaluation and security operations research.
