@@ -60,8 +60,8 @@ def test_combined_score_above_80(db_session):
     case = create_case_with_alerts(db_session, "malware_detected", "critical", count=5)
     engine = RiskEngine(session=db_session)
     result = engine.score_case(case)
-    assert result["total_score"] >= 45
-    assert result["priority"] in ["critical", "high"]
+    assert result["total_score"] >= 80
+    assert result["priority"] == "critical"
 
 
 def test_ml_score_without_model(db_session):
