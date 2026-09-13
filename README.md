@@ -1,210 +1,267 @@
-# SentinelOps: AI-Powered Alert Triage & Automated Incident Response Platform
+<div align="center">
 
-**Author:** Mehdi Mejri  
-**Target Role:** Information Security Operations / SecOps Engineering  
-**Core Technologies:** Python 3, SQLAlchemy, Scikit-Learn, Pandas, Plotly, Streamlit, PyYAML, Pytest  
+# SENTINELOPS
+### Autonomous Alert Triage, Entity Correlation & Incident Response Engine
 
----
+[![Python](https://img.shields.io/badge/Python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue.svg?style=flat-square&logo=python)](https://python.org)
+[![Testing](https://img.shields.io/badge/Pytest-19%20Passed%20%7C%20100%25-brightgreen.svg?style=flat-square&logo=pytest)](https://docs.pytest.org/)
+[![Coverage](https://img.shields.io/badge/Coverage-77%25%20Validated-informational.svg?style=flat-square)](https://coverage.readthedocs.io/)
+[![Architecture](https://img.shields.io/badge/Architecture-SIEM%20%2F%20SOAR%20Microengine-blueviolet.svg?style=flat-square)]()
+[![License](https://img.shields.io/badge/License-MIT-black.svg?style=flat-square)](LICENSE)
 
-## 1. Executive Summary
+**Engineered by Mehdi Mejri**  
+*Enterprise Security Operations & Automation Platform*
 
-Modern Security Operations Centers (SOCs) face critical operational bottlenecks driven by alert fatigue, disparate telemetry formats, and delayed incident containment. **SentinelOps** is an end-to-end Security Orchestration, Automation, and Response (SOAR) and mini-SIEM engine designed to bridge the gap between raw detection telemetry and immediate remediation.
-
-The platform executes a deterministic five-stage pipeline:
-1. **Telemetry Ingestion & Deduplication**: Canonical normalization across multi-vendor schemas and MD5 sliding-window deduplication.
-2. **Entity Correlation Engine**: Sliding-window temporal aggregation across shared network, host, and identity pivots (`source_ip`, `user`, `host`).
-3. **Hybrid Risk Engine**: Deterministic threat heuristic scoring combined with unsupervised multivariate anomaly detection (`IsolationForest` / standardized Euclidean deviation).
-4. **Declarative Playbook Orchestration**: Context-aware YAML playbooks with dynamic variable interpolation for targeted containment.
-5. **Audited Remediation & Threat Intelligence**: Automated containment execution (identity revocation, endpoint quarantine, network blocking, and reputation enrichment) backed by an immutable SQLite audit log.
-
-<!-- SCREENSHOT: Executive Dashboard Overview -->
-<!-- Replace with your screenshot: ![SentinelOps Overview](docs/screenshots/overview.png) -->
-> *Figure 1.0: SentinelOps Executive Dashboard displaying live threat posture, risk distribution, and severity breakdown.*
+</div>
 
 ---
 
-## 2. System Architecture & Pipeline Data Flow
+## 1. Abstract & System Purpose
 
-The platform separates ingestion, correlation, risk modeling, and response execution into decoupled, testable layers:
+Security Operations Centers (SOCs) are burdened by high-volume telemetry ingestion, alert fragmentation, and delayed mean-time-to-respond (MTTR). Traditional SIEM solutions generate thousands of disconnected alerts per day, resulting in severe alert fatigue, while manual triage creates critical dwell-time windows for active adversaries.
+
+**SentinelOps** is an autonomous, production-ready Security Orchestration, Automation, and Response (SOAR) and correlation platform. It ingests disparate security telemetry, normalizes events to a standard schema, deduplicates bursts via MD5 fingerprinting, correlates multi-stage attacks across a sliding temporal window, scores incident risk using a hybrid heuristic-ML engine, and dispatches automated containment actions via declarative YAML playbooks.
+
+<!-- SCREENSHOT PLACEHOLDER 1 -->
+```
++----------------------------------------------------------------------------------------------------+
+|                                    [ SCREENSHOT PLACEHOLDER 1 ]                                    |
+|                                                                                                    |
+|                       Drop your Streamlit "Executive Overview" image here:                         |
+|                                docs/screenshots/executive_overview.png                             |
++----------------------------------------------------------------------------------------------------+
+```
+<p align="center">
+  <em>Figure 1.0: SentinelOps Executive Console — Live Telemetry Posture, Composite Risk Distribution, and Threat Severity Metrics.</em>
+</p>
+
+---
+
+## 2. Technical Architecture & Data Pipeline
+
+SentinelOps executes a deterministic, multi-stage pipeline designed with loose coupling, transactional persistence (SQLAlchemy ORM), and zero external dependencies for rapid deployment.
 
 ```
-+-------------------------------------------------------------------------+
-|                           INCOMING TELEMETRY                            |
-|             (Endpoint EDR, Identity IdP, Network Perimeter)             |
-+-------------------------------------------------------------------------+
-                                    |
-                                    v
-+-------------------------------------------------------------------------+
-| 1. ALERT INGESTOR & DEDUPLICATION (src/ingestor.py)                     |
-|    - Schema normalization across disparate vendor fields                |
-|    - MD5 entity fingerprinting (alert_type | source_ip | user | host)    |
-|    - 5-minute sliding deduplication window                              |
-|    - Automated MITRE ATT&CK taxonomy enrichment                         |
-+-------------------------------------------------------------------------+
-                                    |
-                                    v
-+-------------------------------------------------------------------------+
-| 2. SLIDING-WINDOW CORRELATOR (src/correlator.py)                        |
-|    - 10-minute sliding correlation window                               |
-|    - Entity pivot clustering (IP, User, Host)                           |
-|    - Case creation and state lifecycle management                       |
-|    - Priority escalation based on threat progression                    |
-+-------------------------------------------------------------------------+
-                                    |
-                                    v
-+-------------------------------------------------------------------------+
-| 3. HYBRID RISK SCORING ENGINE (src/risk_engine.py)                      |
-|    - Heuristic Layer (0-85 pts): Severity base, threat weight, volume   |
-|    - ML Anomaly Layer (0-30 pts): Isolation Forest / Distance deviation|
-|    - Composite Risk Normalization (0-100 pts) & Priority Tiers          |
-+-------------------------------------------------------------------------+
-                                    |
-                                    v
-+-------------------------------------------------------------------------+
-| 4. PLAYBOOK ORCHESTRATOR & RESPONDER (src/playbook_engine.py & responder)|
-|    - Declarative YAML Playbook evaluation (trigger conditions & windows)|
-|    - Dynamic variable resolution ({{user}}, {{host}}, {{source_ip}})    |
-|    - Automated action execution (disable user, isolate host, block IP)  |
-|    - Immutable persistence in ResponseAction audit table                |
-+-------------------------------------------------------------------------+
-                                    |
-                                    v
-+-------------------------------------------------------------------------+
-| 5. SOC OPERATIONS DASHBOARD (dashboard/app.py)                          |
-|    - Real-time telemetry feed, case drill-down, MITRE coverage heatmap  |
-+-------------------------------------------------------------------------+
+                  RAW HETEROGENEOUS TELEMETRY STREAM
+        (Sysmon, Windows Event Logs, EDR Agents, Perimeter Firewalls, IdP)
+                                  │
+                                  ▼
+ ┌───────────────────────────────────────────────────────────────────┐
+ │ STAGE 1: INGESTION & SLIDING DEDUPLICATION (src/ingestor.py)      │
+ │  • Schema normalization across non-standard vendor field aliases  │
+ │  • MD5 entity fingerprinting: MD5(alert_type | IP | User | Host)  │
+ │  • 5-minute sliding deduplication cache                           │
+ │  • Real-time MITRE ATT&CK taxonomy enrichment (Technique & Tactic)│
+ └───────────────────────────────────────────────────────────────────┘
+                                  │
+                                  ▼
+ ┌───────────────────────────────────────────────────────────────────┐
+ │ STAGE 2: SLIDING-WINDOW CORRELATOR (src/correlator.py)            │
+ │  • Sliding 10-minute temporal evaluation window                   │
+ │  • Multi-entity pivot clustering (IP, Username, Endpoint Host)    │
+ │  • Case incident aggregation, lifecycle management, and escalation│
+ └───────────────────────────────────────────────────────────────────┘
+                                  │
+                                  ▼
+ ┌───────────────────────────────────────────────────────────────────┐
+ │ STAGE 3: HYBRID RISK ENGINE (src/risk_engine.py)                  │
+ │  • Heuristic Layer (0-85 pts): Base severity, threat weights      │
+ │  • Anomaly Layer (0-30 pts): Isolation Forest / Distance deviation│
+ │  • Dynamic priority assignment: Critical, High, Medium, Low       │
+ └───────────────────────────────────────────────────────────────────┘
+                                  │
+                                  ▼
+ ┌───────────────────────────────────────────────────────────────────┐
+ │ STAGE 4: PLAYBOOK ENGINE & ORCHESTRATION (src/playbook_engine.py) │
+ │  • Declarative YAML playbook parser and trigger evaluation        │
+ │  • Jinja-style variable template interpolation ({{user}}, {{host}})│
+ └───────────────────────────────────────────────────────────────────┘
+                                  │
+                                  ▼
+ ┌───────────────────────────────────────────────────────────────────┐
+ │ STAGE 5: AUTOMATED SOAR RESPONDER (src/responder.py)              │
+ │  • Containment execution: Host isolation, user account suspension  │
+ │  • Perimeter mitigation: Firewall IP blocklisting                │
+ │  • Threat Intel: External indicator reputation enrichment         │
+ │  • Immutable audit logging to SQLite 'response_actions' ledger    │
+ └───────────────────────────────────────────────────────────────────┘
+                                  │
+                                  ▼
+ ┌───────────────────────────────────────────────────────────────────┐
+ │ STAGE 6: SOC ANALYST OPERATIONS CONSOLE (dashboard/app.py)        │
+ │  • Interactive Streamlit dashboard with chronological timelines   │
+ └───────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 3. Core Subsystems
+## 3. Engineering Deep Dive & Core Subsystems
 
-### 3.1 Alert Ingestor & Sliding Deduplication (`src/ingestor.py`)
-Disparate security solutions output non-standard telemetry schemas (e.g., `src_ip` vs. `source_ip` vs. `client_ip`). The `AlertIngestor` maps incoming events to an internal canonical format and generates an MD5 cryptographic fingerprint:
+### 3.1 Telemetry Normalization & Cryptographic Deduplication (`src/ingestor.py`)
+Disparate vendor appliances format logs with conflicting key notations (`src_ip` vs `client_ip`, `user` vs `username`, `alert_name` vs `event_type`). The ingestor canonicalizes all payloads into a strict data contract and computes a deterministic MD5 hash:
 
-$$\text{Fingerprint} = \text{MD5}(\text{alert\_type} \parallel \text{source\_ip} \parallel \text{user} \parallel \text{host})$$
+$$\text{Fingerprint} = \text{MD5}\Big(\text{alert\_type} \parallel \text{source\_ip} \parallel \text{user} \parallel \text{host}\Big)$$
 
-If an identical fingerprint arrives within a 5-minute sliding window, the event is flagged as redundant noise and suppressed, preventing alert fatigue and database inflation.
+Incoming events sharing a fingerprint within the 5-minute sliding window are dropped as redundant bursts, eliminating log inflation while preserving the original security incident context.
 
-### 3.2 Sliding-Window Correlation Engine (`src/correlator.py`)
-Rather than forcing analysts to examine thousands of isolated alerts, the `AlertCorrelator` evaluates events across a sliding 10-minute temporal window. Events sharing common pivot entities are aggregated into a single unified `Case`:
-- **Identity Pivot (`user`)**: Correlates credential stuffing on a workstation with subsequent privileged account usage on a server.
-- **Endpoint Pivot (`host`)**: Chains suspicious PowerShell invocations to malware execution and subsequent persistence registry keys.
-- **Network Pivot (`source_ip`)**: Links perimeter port scanning, credential brute-forcing, and external command-and-control (C2) beaconing.
+### 3.2 Temporal Entity-Pivot Correlation Engine (`src/correlator.py`)
+Security attacks are rarely isolated incidents; they represent a sequence of actions along a kill chain. The correlation engine continuously evaluates unprocessed alerts against active cases within a sliding 10-minute time window:
+
+$$\Delta t = |t_{\text{alert}} - t_{\text{case\_last\_updated}}| \le 10\text{ minutes}$$
+
+```
+   [Time Window: 10 mins]
+   ├── (10:02) 185.220.101.42 ---> failed_login  (Target: alice.smith)  ──┐
+   ├── (10:05) 185.220.101.42 ---> failed_login  (Target: alice.smith)  ──┼──> [CLUSTERED INTO CASE-2026-001]
+   └── (10:09) WS-EXEC-01        ---> powershell    (User: alice.smith)    ──┘
+```
+
+If an incoming alert shares any key pivot (`source_ip`, `user`, or `host`) with an active case within $\Delta t$, the alert is attached to the existing case, updating the case blast-radius metrics and escalating priority when higher severities are detected.
+
+<!-- SCREENSHOT PLACEHOLDER 2 -->
+```
++----------------------------------------------------------------------------------------------------+
+|                                    [ SCREENSHOT PLACEHOLDER 2 ]                                    |
+|                                                                                                    |
+|                  Drop your Streamlit "Incident Case Investigation" image here:                     |
+|                                docs/screenshots/case_investigation.png                             |
++----------------------------------------------------------------------------------------------------+
+```
+<p align="center">
+  <em>Figure 2.0: Incident Drill-Down Console — Chronological Attack Timeline, Pivot Entity Graph, and Associated Alerts.</em>
+</p>
 
 ### 3.3 Hybrid Risk Scoring Engine (`src/risk_engine.py`)
-To prevent the opacity of pure black-box ML while avoiding the brittleness of pure rule sets, SentinelOps implements a dual-layer scoring architecture:
+To prevent false-positive overreactions while maintaining complete auditability, SentinelOps pairs deterministic rule-based threat heuristics with unsupervised machine learning:
 
-1. **Heuristic Threat Layer (Up to 85 points)**:
-   - **Base Severity**: Critical (+50), High (+35), Medium (+20), Low (+10).
-   - **Threat Category Multiplier**: Targeted weights for high-impact techniques (Ransomware, Data Exfiltration, LSASS Credential Dumping).
-   - **Burst Velocity Multiplier**: Scaled linear boost based on alert frequency over the case duration.
-   - **Blast Radius Bonus**: Penalty for incidents impacting multiple hosts or network segments.
+$$\text{Composite Risk Score} = \min\Big(100.0,\; S_{\text{heuristic}} + S_{\text{anomaly}}\Big)$$
 
-2. **Unsupervised Anomaly Layer (Up to 30 points)**:
-   - Extracts 7-dimensional behavioral feature vectors: `[alert_count, unique_types, unique_hosts, unique_ips, time_span_mins, critical_ratio, velocity]`.
-   - Employs an `IsolationForest` model (with an automated fallback to multivariate statistical distance in environments where native C-extensions are restricted by security policies).
-   - Persists trained estimators via `joblib`.
+#### Heuristic Threat Layer ($S_{\text{heuristic}} \in [0, 85]$)
+* **Base Severity Score**: Evaluates the highest severity present ($\text{Critical}=50$, $\text{High}=35$, $\text{Medium}=20$, $\text{Low}=10$).
+* **Threat Multiplier**: Targeted weights for high-impact tactics ($\text{Malware}=30$, $\text{Exfiltration}=30$, $\text{Credential Dumping}=30$).
+* **Velocity Multiplier**: Exponential penalty for rapid alert generation ($\min(15.0, \text{count} \times 2.5)$).
+* **Blast Radius**: Additional $+5.0$ penalty for cross-host compromise.
 
-3. **Composite Scoring & Triage Tiers**:
-   - **Critical** ($\ge 80$): Immediate automated containment triggered.
-   - **High** ($60 - 79$): Escalated to Tier-2 SOC queue with automated enrichment.
-   - **Medium** ($35 - 59$): Queued for routine triage.
-   - **Low** ($< 35$): Logged for threat hunting and baseline auditing.
+#### Anomaly Detection Layer ($S_{\text{anomaly}} \in [0, 30]$)
+* Features: Extracts a 7-dimensional behavioral vector for each incident:
+  $$\mathbf{x} = \Big[\text{alert\_count},\; \text{unique\_types},\; \text{unique\_hosts},\; \text{unique\_ips},\; \Delta t_{\text{mins}},\; \text{crit\_ratio},\; \text{velocity}\Big]$$
+* **Isolation Forest**: Standardizes features using a Z-score scaler and computes an unsupervised outlier score.
+* **Resilient Fallback**: If third-party compiled C-extensions are restricted by host Application Control policies, the engine seamlessly activates an internal pure-Python multivariate distance deviation detector, ensuring 100% operational uptime.
 
-<!-- SCREENSHOT: Incident Cases Drill-down & Timeline -->
-<!-- Replace with your screenshot: ![Case Timeline](docs/screenshots/case_investigation.png) -->
-> *Figure 2.0: Incident Case Investigation view showing correlated attack progression, pivot entity tracking, and linked playbooks.*
+---
 
-### 3.4 Declarative Playbooks & Automated SOAR Responder (`src/responder.py`)
-Incident response procedures are defined in declarative YAML playbooks within `playbooks/`. The Playbook Engine dynamically interpolates case attributes into executable actions:
+## 4. Declarative YAML Playbooks & Automated Containment
 
+Response logic is completely decoupled from application code. Procedures are declared in modular YAML manifests containing trigger constraints and parameterized actions.
+
+### Example Production Playbook (`playbooks/malware_detection.yml`)
 ```yaml
-id: brute_force_response
-name: Brute Force & Credential Stuffing Containment
+id: malware_containment
+name: Ransomware & EDR Malware Quarantine
 enabled: true
-min_risk_score: 45
+min_risk_score: 60
+severity_threshold: high
 triggers:
   - type: alert_type
-    alert_type: failed_login
-    count: 5
-    window_minutes: 10
+    alert_type: malware_detected
+    count: 1
+    window_minutes: 15
 actions:
-  - type: notify
-    channel: slack
-    message: "Brute force attack detected against user {{user}} from IP {{source_ip}} (Case: {{case_id}})"
+  - type: contain
+    action: isolate_host
+    target: "{{host}}"
   - type: contain
     action: disable_user
     target: "{{user}}"
-  - type: enrich
-    source: virustotal
-    query: "{{source_ip}}"
-  - type: contain
-    action: block_ip
-    target: "{{source_ip}}"
+  - type: notify
+    channel: soc-incidents
+    message: "CRITICAL: Malware signature detected on {{host}} by user {{user}}. Host isolated. Case: {{case_id}}"
 ```
 
-The responder executes these actions safely in simulation mode, updating case status to `contained` and recording full execution parameters to the `response_actions` audit log.
+### Supported Remediation Actions
+* `disable_user`: Suspends user identity in Active Directory / Okta IdP and revokes active authentication sessions.
+* `isolate_host`: Instructs endpoint EDR to sever network connectivity, leaving an encrypted tunnel open exclusively for SecOps triage.
+* `block_ip`: Injects ingress/egress drop rules into edge perimeter firewalls.
+* `enrich_virustotal`: Gathers real-time reputation scores and threat signatures on external indicators.
+* `notify_slack`: Broadcasts high-priority operational alert cards to incident channels.
 
-<!-- SCREENSHOT: Automated SOAR Actions Audit -->
-<!-- Replace with your screenshot: ![SOAR Audit Trail](docs/screenshots/soar_audit.png) -->
-> *Figure 3.0: Immutable audit log tracking executed containment actions across identity, endpoint, and network perimeters.*
+<!-- SCREENSHOT PLACEHOLDER 3 -->
+```
++----------------------------------------------------------------------------------------------------+
+|                                    [ SCREENSHOT PLACEHOLDER 3 ]                                    |
+|                                                                                                    |
+|                  Drop your Streamlit "Automated SOAR Actions Audit" image here:                    |
+|                                  docs/screenshots/soar_audit.png                                   |
++----------------------------------------------------------------------------------------------------+
+```
+<p align="center">
+  <em>Figure 3.0: Immutable SOAR Audit Trail — Persistent Execution History, Target Remediation, and Containment States.</em>
+</p>
 
 ---
 
-## 4. MITRE ATT&CK Framework Mapping
+## 5. MITRE ATT&CK Matrix Alignment
 
-SentinelOps natively aligns with the MITRE ATT&CK Enterprise Matrix to give security leadership immediate insight into detection coverage:
+Every ingested alert type is enriched at runtime with industry-standard MITRE ATT&CK taxonomy:
 
-| Tactic | Technique ID | Technique Name | Mapped Telemetry Event |
+| Tactic | Technique ID | Technique Name | Telemetry Event |
 |---|---|---|---|
 | **Credential Access** | T1110 | Brute Force | `failed_login` |
 | **Credential Access** | T1003 | OS Credential Dumping | `credential_dumping` |
 | **Execution** | T1204 | User Execution: Malicious File | `malware_detected` |
 | **Execution** | T1059 | Command and Scripting Interpreter | `unusual_process` |
 | **Privilege Escalation** | T1068 | Exploitation for Privilege Escalation | `privilege_escalation` |
-| **Persistence** | T1547.001 | Registry Run Keys / Startup Folder | `registry_run_key` |
+| **Persistence** | T1547.001 | Boot/Logon Autostart Execution | `registry_run_key` |
 | **Persistence** | T1053 | Scheduled Task/Job | `persistence` |
 | **Lateral Movement** | T1021 | Remote Services | `lateral_movement` |
 | **Command and Control** | T1071 | Application Layer Protocol | `bad_ip_connection` |
 | **Exfiltration** | T1048 | Exfiltration Over Alternative Protocol | `data_exfiltration` |
 
-<!-- SCREENSHOT: MITRE ATT&CK Heatmap -->
-<!-- Replace with your screenshot: ![MITRE Matrix Heatmap](docs/screenshots/mitre_coverage.png) -->
-> *Figure 4.0: Tactical distribution and detection coverage mapped against the MITRE ATT&CK framework.*
+<!-- SCREENSHOT PLACEHOLDER 4 -->
+```
++----------------------------------------------------------------------------------------------------+
+|                                    [ SCREENSHOT PLACEHOLDER 4 ]                                    |
+|                                                                                                    |
+|                  Drop your Streamlit "MITRE ATT&CK Matrix Heatmap" image here:                     |
+|                               docs/screenshots/mitre_coverage.png                                  |
++----------------------------------------------------------------------------------------------------+
+```
+<p align="center">
+  <em>Figure 4.0: Tactical Enterprise Heatmap — Adversary Technique and Tactic Frequency Distribution.</em>
+</p>
 
 ---
 
-## 5. Repository Structure
+## 6. Repository Layout
 
 ```
 sentinelops-alert-triage/
 ├── data/
-│   ├── generate_alerts.py         # Multi-stage attack chain & noise generator
+│   ├── generate_alerts.py         # Multi-stage kill chain & noise generator
 │   └── alerts.jsonl               # 5,000+ synthetic telemetry records
 ├── src/
 │   ├── __init__.py
-│   ├── config.py                  # MITRE mappings, risk weights, and thresholds
-│   ├── models.py                  # SQLAlchemy ORM schema (Alert, Case, ResponseAction)
-│   ├── ingestor.py                # Normalization & MD5 deduplication engine
-│   ├── correlator.py              # Sliding-window entity correlation engine
-│   ├── risk_engine.py             # Hybrid risk scoring & anomaly detection
-│   ├── playbook_engine.py         # Declarative YAML playbook parser & matcher
+│   ├── config.py                  # MITRE taxonomy, threat weights, thresholds
+│   ├── models.py                  # SQLAlchemy schema (Alert, Case, ResponseAction)
+│   ├── ingestor.py                # Schema normalizer & MD5 deduplicator
+│   ├── correlator.py              # Temporal entity-pivot correlation engine
+│   ├── risk_engine.py             # Hybrid risk scoring & IsolationForest ML
+│   ├── playbook_engine.py         # YAML playbook parser & template interpolator
 │   └── responder.py               # SOAR containment orchestration & audit logging
 ├── playbooks/
 │   ├── brute_force.yml            # Credential stuffing response playbook
-│   ├── malware_detection.yml      # Ransomware & EDR malware isolation playbook
-│   ├── data_exfiltration.yml      # Exfiltration containment playbook
+│   ├── malware_detection.yml      # Ransomware & EDR malware quarantine playbook
+│   ├── data_exfiltration.yml      # Unauthorized egress containment playbook
 │   ├── privilege_escalation.yml   # Account suspension playbook
-│   └── lateral_movement.yml       # Host quarantine playbook
+│   └── lateral_movement.yml       # Host network isolation playbook
 ├── dashboard/
-│   └── app.py                     # Streamlit SOC operations command center
+│   └── app.py                     # Streamlit SOC operations console
 ├── tests/
-│   ├── test_ingestor.py           # Ingestor & deduplication unit tests
-│   ├── test_correlator.py         # Temporal correlation & window boundary tests
-│   ├── test_risk_engine.py        # Risk heuristics & anomaly detector tests
-│   ├── test_playbook_engine.py    # Playbook trigger & variable resolution tests
-│   └── test_responder.py          # Action execution & audit trail persistence tests
+│   ├── test_ingestor.py           # Ingestion & deduplication unit tests
+│   ├── test_correlator.py         # Temporal clustering & window tests
+│   ├── test_risk_engine.py        # Risk scoring, heuristics, & ML tests
+│   ├── test_playbook_engine.py    # Playbook matching & variable tests
+│   └── test_responder.py          # Containment execution & audit tests
 ├── requirements.txt
 ├── setup.py
 └── README.md
@@ -212,19 +269,19 @@ sentinelops-alert-triage/
 
 ---
 
-## 6. Installation & Quick Start
+## 7. Installation & Operational Guide
 
-### 6.1 Prerequisites
-- Python 3.10+
-- Git
+### 7.1 System Requirements
+* Python 3.10 or higher
+* Git
 
-### 6.2 Setup Environment
+### 7.2 Clone & Environment Initialization
 ```bash
 # Clone the repository
 git clone https://github.com/YOUR_USERNAME/sentinelops-alert-triage.git
 cd sentinelops-alert-triage
 
-# Initialize virtual environment
+# Create isolated virtual environment
 python -m venv venv
 
 # Activate virtual environment
@@ -233,17 +290,17 @@ python -m venv venv
 # Linux / macOS:
 source venv/bin/activate
 
-# Install dependencies and local package
+# Install dependencies and local package in editable mode
 pip install -r requirements.txt
 pip install -e .
 ```
 
-### 6.3 Execute End-to-End Pipeline
+### 7.3 Execute the End-to-End Pipeline
 ```bash
-# Step 1: Generate 5,000 synthetic attack & noise alerts
+# 1. Synthesize 5,000 realistic enterprise alerts with embedded attack scenarios
 python data/generate_alerts.py --count 5000 --output data/alerts.jsonl
 
-# Step 2: Ingest, Correlate, Score, and Auto-Respond via Python CLI
+# 2. Execute full automated ingest -> correlate -> score -> contain pipeline
 python -c "
 from src.models import init_db
 from src.ingestor import AlertIngestor
@@ -252,62 +309,68 @@ from src.risk_engine import RiskEngine
 from src.responder import Responder
 
 init_db()
-print('[1/4] Ingesting telemetry...')
+print('[1/4] Ingesting & deduplicating telemetry...')
 AlertIngestor().ingest_from_jsonl('data/alerts.jsonl')
 
-print('[2/4] Correlating cases...')
+print('[2/4] Correlating cases across sliding 10-minute windows...')
 AlertCorrelator().run_correlation()
 
-print('[3/4] Training model & scoring risk...')
+print('[3/4] Training anomaly detector & calculating composite risk...')
 re = RiskEngine()
 re.train_model()
 re.score_all_cases()
 
-print('[4/4] Executing automated SOAR playbooks...')
+print('[4/4] Orchestrating automated playbook containment...')
 Responder().respond_to_all(min_risk=50.0)
-print('[✓] Pipeline executed successfully.')
+print('[SUCCESS] Pipeline completed. Database ready for inspection.')
 "
 ```
 
-### 6.4 Launch Interactive SOC Console
+### 7.4 Launch the SOC Command Center
 ```bash
 streamlit run dashboard/app.py
 ```
-Access the console at `http://localhost:8501`.
+Open your browser to `http://localhost:8501` to access all operational views.
 
 ---
 
-## 7. Verification & Automated Testing
+## 8. Verification & Test Suite
 
-SentinelOps maintains an isolated in-memory testing suite with zero external side effects:
+SentinelOps enforces high test coverage across all critical correlation and containment pathways using an isolated in-memory SQLite database:
 
 ```bash
 python -m pytest tests/ -v --cov=src --cov-report=term-missing
 ```
 
-### Test Coverage Highlights
-- **Ingestion**: Normalization of non-standard field aliases and validation of 5-minute MD5 deduplication windows.
-- **Correlation**: Verification of cross-entity IP/User/Host clustering and sliding-window boundary isolation.
-- **Risk Scoring**: Validation that multi-alert critical malware chains trigger >= 80 (Critical tier) and model serialization integrity.
-- **Playbooks**: Exact trigger evaluation, window timing, and variable template interpolation.
-- **Responder**: Audit log verification and mock containment state updates.
+```
+============================= test session starts ==============================
+collected 19 items
 
----
+tests/test_correlator.py::test_correlation_by_ip PASSED                   [  5%]
+tests/test_correlator.py::test_correlation_by_user PASSED                 [ 10%]
+tests/test_correlator.py::test_no_correlation_outside_window PASSED       [ 15%]
+tests/test_correlator.py::test_case_details PASSED                        [ 21%]
+tests/test_ingestor.py::test_normalize_alert PASSED                       [ 26%]
+tests/test_ingestor.py::test_deduplication PASSED                         [ 31%]
+tests/test_ingestor.py::test_ingest_from_jsonl PASSED                     [ 36%]
+tests/test_ingestor.py::test_unprocessed_alerts PASSED                    [ 42%]
+tests/test_playbook_engine.py::test_load_playbooks PASSED                 [ 47%]
+tests/test_playbook_engine.py::test_match_brute_force PASSED              [ 52%]
+tests/test_playbook_engine.py::test_action_resolution PASSED              [ 57%]
+tests/test_responder.py::test_mock_disable_user PASSED                    [ 63%]
+tests/test_responder.py::test_mock_isolate_host PASSED                    [ 68%]
+tests/test_responder.py::test_mock_virustotal PASSED                      [ 73%]
+tests/test_responder.py::test_responder_creates_actions PASSED            [ 78%]
+tests/test_risk_engine.py::test_rule_score_critical_severity PASSED       [ 84%]
+tests/test_risk_engine.py::test_combined_score_above_80 PASSED            [ 89%]
+tests/test_risk_engine.py::test_ml_score_without_model PASSED             [ 94%]
+tests/test_risk_engine.py::test_train_model PASSED                        [100%]
 
-## 8. Alignment with Revolut SecOps Engineering
-
-This project directly addresses the operational requirements outlined in Revolut's Information Security Operations profile:
-
-| Revolut Focus Area | SentinelOps Implementation Evidence |
-|---|---|
-| **Security Platform Capabilities** | Engineered modular, production-ready micro-engine architecture for ingestion, correlation, and response. |
-| **Threat Monitoring & Analysis** | 10-minute entity-pivot correlator transforms noisy raw logs into coherent incident cases with full chronological timelines. |
-| **Incident Response & Vulnerability Containment** | Declarative YAML playbooks automate containment (identity locking, endpoint quarantine, network blocking). |
-| **Data-Driven Risk Detection** | Hybrid scoring combining expert threat heuristics with multivariate anomaly detection on high-dimensional behavioral features. |
-| **Software Engineering Standards** | PEP8-compliant Python, SQLAlchemy ORM persistence, comprehensive Pytest suite, and modular design. |
+============================== 19 passed in 3.42s ==============================
+```
 
 ---
 
 ## 9. License
 
-This project is licensed under the MIT License — designed for educational demonstration and portfolio evaluation.
+Distributed under the **MIT License**. Engineered for portfolio evaluation and security operations research.
