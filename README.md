@@ -371,33 +371,6 @@ SentinelOps enforces high test coverage across all critical correlation and cont
 python -m pytest tests/ -v --cov=src --cov-report=term-missing
 ```
 
-```
-============================= test session starts ==============================
-collected 19 items
-
-tests/test_correlator.py::test_correlation_by_ip PASSED                   [  5%]
-tests/test_correlator.py::test_correlation_by_user PASSED                 [ 10%]
-tests/test_correlator.py::test_no_correlation_outside_window PASSED       [ 15%]
-tests/test_correlator.py::test_case_details PASSED                        [ 21%]
-tests/test_ingestor.py::test_normalize_alert PASSED                       [ 26%]
-tests/test_ingestor.py::test_deduplication PASSED                         [ 31%]
-tests/test_ingestor.py::test_ingest_from_jsonl PASSED                     [ 36%]
-tests/test_ingestor.py::test_unprocessed_alerts PASSED                    [ 42%]
-tests/test_playbook_engine.py::test_load_playbooks PASSED                 [ 47%]
-tests/test_playbook_engine.py::test_match_brute_force PASSED              [ 52%]
-tests/test_playbook_engine.py::test_action_resolution PASSED              [ 57%]
-tests/test_responder.py::test_mock_disable_user PASSED                    [ 63%]
-tests/test_responder.py::test_mock_isolate_host PASSED                    [ 68%]
-tests/test_responder.py::test_mock_virustotal PASSED                      [ 73%]
-tests/test_responder.py::test_responder_creates_actions PASSED            [ 78%]
-tests/test_risk_engine.py::test_rule_score_critical_severity PASSED       [ 84%]
-tests/test_risk_engine.py::test_combined_score_above_80 PASSED            [ 89%]
-tests/test_risk_engine.py::test_ml_score_without_model PASSED             [ 94%]
-tests/test_risk_engine.py::test_train_model PASSED                        [100%]
-
-============================== 19 passed in 3.42s ==============================
-```
-
 ---
 ![alt text](<Screenshot 2026-09-13 201551.png>)
 ---
