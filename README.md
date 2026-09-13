@@ -25,7 +25,7 @@ Security Operations Centers (SOCs) are burdened by high-volume telemetry ingesti
 <!-- SCREENSHOT PLACEHOLDER 1 -->  
 
 ---
-![alt text](<Screenshot 2026-09-13 204732.png>)
+![alt text](</docs/screenshots/Screenshot 2026-09-13 204732.png>)
 ---
 
 
@@ -123,11 +123,11 @@ If an incoming alert shares any key pivot (`source_ip`, `user`, or `host`) with 
 <!-- SCREENSHOT PLACEHOLDER 2 -->
 
 ---
-![alt text](<Screenshot 2026-09-13 204749.png>)
+![alt text](</docs/screenshots/Screenshot 2026-09-13 204749.png>)
 ---
-![alt text](<Screenshot 2026-09-13 204802.png>)
+![alt text](</docs/screenshots/Screenshot 2026-09-13 204802.png>)
 ---
-![alt text](<Screenshot 2026-09-13 204814.png>)
+![alt text](</docs/screenshots/Screenshot 2026-09-13 204814.png>)
 ---
 
 <p align="center">
@@ -195,9 +195,9 @@ actions:
 <!-- SCREENSHOT PLACEHOLDER 3 -->
 
 ---
-![alt text](<Screenshot 2026-09-13 204829.png>)
+![alt text](</docs/screenshots/Screenshot 2026-09-13 204829.png>)
 ---
-![alt text](<Screenshot 2026-09-13 204836.png>)
+![alt text](</docs/screenshots/Screenshot 2026-09-13 204836.png>)
 ---
 
 <p align="center">
@@ -226,7 +226,7 @@ Every ingested alert type is enriched at runtime with industry-standard MITRE AT
 <!-- SCREENSHOT PLACEHOLDER 4 -->
 
 ---
-![alt text](<Screenshot 2026-09-13 204824.png>)
+![alt text](</docs/screenshots/Screenshot 2026-09-13 204824.png>)
 ---
 ---
 
@@ -300,9 +300,9 @@ pip install -e .
 ```
 
 ---
-![alt text](<Screenshot 2026-09-04 181019.png>)
+![alt text](</docs/screenshots/Screenshot 2026-09-04 181019.png>)
 ---
-![alt text](<Screenshot 2026-09-04 181329.png>)
+![alt text](</docs/screenshots/Screenshot 2026-09-04 181329.png>)
 ---
 
 ### 7.3 Execute the End-to-End Pipeline
@@ -343,7 +343,7 @@ streamlit run dashboard/app.py
 Open your browser to `http://localhost:8501` to access all operational views.
 
 ---
-![alt text](<Screenshot 2026-09-13 200225.png>)
+![alt text](</docs/screenshots/Screenshot 2026-09-13 200225.png>)
 ---
 
 ## 8. Verification & Test Suite
@@ -351,19 +351,19 @@ Open your browser to `http://localhost:8501` to access all operational views.
 SentinelOps enforces high test coverage across all critical correlation and containment pathways using an isolated in-memory SQLite database:
 
 ---
-![alt text](<Screenshot 2026-09-04 202956.png>)
+![alt text](</docs/screenshots/Screenshot 2026-09-04 202956.png>)
 ---
-![alt text](<Screenshot 2026-09-05 141505.png>)
+![alt text](</docs/screenshots/Screenshot 2026-09-05 141505.png>)
 ---
-![alt text](<Screenshot 2026-09-06 201509.png>)
+![alt text](</docs/screenshots/Screenshot 2026-09-06 201509.png>)
 ---
-![alt text](<Screenshot 2026-09-07 124901.png>)
+![alt text](</docs/screenshots/Screenshot 2026-09-07 124901.png>)
 ---
-![alt text](<Screenshot 2026-09-11 141516.png>)
+![alt text](</docs/screenshots/Screenshot 2026-09-11 141516.png>)
 ---
-![alt text](<Screenshot 2026-09-11 194145.png>)
+![alt text](</docs/screenshots/Screenshot 2026-09-11 194145.png>)
 ---
-![alt text](<Screenshot 2026-09-13 195646.png>)
+![alt text](</docs/screenshots/Screenshot 2026-09-13 195646.png>)
 ---
 
 
@@ -372,8 +372,10 @@ python -m pytest tests/ -v --cov=src --cov-report=term-missing
 ```
 
 ---
-![alt text](<Screenshot 2026-09-13 201551.png>)
+![alt text](</docs/screenshots/Screenshot 2026-09-13 201551.png>)
 ---
-![alt text](<Screenshot 2026-09-13 201531.png>)
+![alt text](</docs/screenshots/Screenshot 2026-09-13 201531.png>)
 ---
 
+
+<p align="center"><sub>Made with ❤️ by <a href="https://github.com/Mejri-Mehdi">Mejri Mehdi</a></sub></p>
