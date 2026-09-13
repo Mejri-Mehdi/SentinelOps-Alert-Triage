@@ -417,3 +417,4 @@ elif nav == "⚙️ Pipeline Control":
                 res_stats = responder.respond_to_all(min_risk=50.0)
                 st.success(f"Contained: {res_stats['contained']} | Actions: {res_stats['actions_executed']}")
                 st.rerun()
+
