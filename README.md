@@ -375,7 +375,8 @@ python -m pytest tests/ -v --cov=src --cov-report=term-missing
 ![alt text](</docs/screenshots/Screenshot 2026-09-13 201551.png>)
 ---
 ![alt text](</docs/screenshots/Screenshot 2026-09-13 201531.png>)
-------
+---
+---
 
 
 <p align="center"><sub>Made with ❤️ by <a href="https://github.com/Mejri-Mehdi">Mejri Mehdi</a></sub></p> 
