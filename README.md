@@ -100,14 +100,18 @@ SentinelOps executes a deterministic, multi-stage pipeline designed with loose c
 ### 3.1 Telemetry Normalization & Cryptographic Deduplication (`src/ingestor.py`)
 Disparate vendor appliances format logs with conflicting key notations (`src_ip` vs `client_ip`, `user` vs `username`, `alert_name` vs `event_type`). The ingestor canonicalizes all payloads into a strict data contract and computes a deterministic MD5 hash:
 
-$$\text{Fingerprint} = \text{MD5}\Big(\text{alert\_type} \parallel \text{source\_ip} \parallel \text{user} \parallel \text{host}\Big)$$
+```text
+Fingerprint = MD5( alert_type || source_ip || user || host )
+```
 
 Incoming events sharing a fingerprint within the 5-minute sliding window are dropped as redundant bursts, eliminating log inflation while preserving the original security incident context.
 
 ### 3.2 Temporal Entity-Pivot Correlation Engine (`src/correlator.py`)
 Security attacks are rarely isolated incidents; they represent a sequence of actions along a kill chain. The correlation engine continuously evaluates unprocessed alerts against active cases within a sliding 10-minute time window:
 
-$$\Delta t = |t_{\text{alert}} - t_{\text{case\_last\_updated}}| \le 10\text{ minutes}$$
+```text
+Δt = |t_alert - t_case_updated| ≤ 10 minutes
+```
 
 ```
    [Time Window: 10 mins]
@@ -116,7 +120,7 @@ $$\Delta t = |t_{\text{alert}} - t_{\text{case\_last\_updated}}| \le 10\text{ mi
    └── (10:09) WS-EXEC-01        ---> powershell    (User: alice.smith)    ──┘
 ```
 
-If an incoming alert shares any key pivot (`source_ip`, `user`, or `host`) with an active case within $\Delta t$, the alert is attached to the existing case, updating the case blast-radius metrics and escalating priority when higher severities are detected.
+If an incoming alert shares any key pivot (`source_ip`, `user`, or `host`) with an active case within `Δt`, the alert is attached to the existing case, updating the case blast-radius metrics and escalating priority when higher severities are detected.
 
 <!-- SCREENSHOT PLACEHOLDER 2 -->
 ```
@@ -134,17 +138,21 @@ If an incoming alert shares any key pivot (`source_ip`, `user`, or `host`) with 
 ### 3.3 Hybrid Risk Scoring Engine (`src/risk_engine.py`)
 To prevent false-positive overreactions while maintaining complete auditability, SentinelOps pairs deterministic rule-based threat heuristics with unsupervised machine learning:
 
-$$\text{Composite Risk Score} = \min\Big(100.0,\; S_{\text{heuristic}} + S_{\text{anomaly}}\Big)$$
+```text
+Composite Risk Score = min( 100.0, Heuristic_Score + Anomaly_Score )
+```
 
-#### Heuristic Threat Layer ($S_{\text{heuristic}} \in [0, 85]$)
-* **Base Severity Score**: Evaluates the highest severity present ($\text{Critical}=50$, $\text{High}=35$, $\text{Medium}=20$, $\text{Low}=10$).
-* **Threat Multiplier**: Targeted weights for high-impact tactics ($\text{Malware}=30$, $\text{Exfiltration}=30$, $\text{Credential Dumping}=30$).
-* **Velocity Multiplier**: Exponential penalty for rapid alert generation ($\min(15.0, \text{count} \times 2.5)$).
-* **Blast Radius**: Additional $+5.0$ penalty for cross-host compromise.
+#### Heuristic Threat Layer (0 to 85 Points)
+* **Base Severity Score**: Evaluates the highest severity present (`Critical` = 50, `High` = 35, `Medium` = 20, `Low` = 10).
+* **Threat Multiplier**: Targeted weights for high-impact tactics (`Malware` = 30, `Exfiltration` = 30, `Credential Dumping` = 30).
+* **Velocity Multiplier**: Exponential penalty for rapid alert generation (`min(15.0, count * 2.5)`).
+* **Blast Radius**: Additional `+5.0` penalty for cross-host compromise.
 
-#### Anomaly Detection Layer ($S_{\text{anomaly}} \in [0, 30]$)
-* Features: Extracts a 7-dimensional behavioral vector for each incident:
-  $$\mathbf{x} = \Big[\text{alert\_count},\; \text{unique\_types},\; \text{unique\_hosts},\; \text{unique\_ips},\; \Delta t_{\text{mins}},\; \text{crit\_ratio},\; \text{velocity}\Big]$$
+#### Anomaly Detection Layer (0 to 30 Points)
+* **Feature Vector**: Extracts a 7-dimensional behavioral vector for each incident:
+  ```text
+  Feature_Vector = [ alert_count, unique_types, unique_hosts, unique_ips, time_span_mins, critical_ratio, velocity ]
+  ```
 * **Isolation Forest**: Standardizes features using a Z-score scaler and computes an unsupervised outlier score.
 * **Resilient Fallback**: If third-party compiled C-extensions are restricted by host Application Control policies, the engine seamlessly activates an internal pure-Python multivariate distance deviation detector, ensuring 100% operational uptime.
 
@@ -259,7 +267,7 @@ sentinelops-alert-triage/
 ├── tests/
 │   ├── test_ingestor.py           # Ingestion & deduplication unit tests
 │   ├── test_correlator.py         # Temporal clustering & window tests
-│   ├── test_risk_engine.py        # Risk scoring, heuristics, & ML tests
+│   ├── test_risk_engine.py        # Risk heuristics & anomaly detector tests
 │   ├── test_playbook_engine.py    # Playbook matching & variable tests
 │   └── test_responder.py          # Containment execution & audit tests
 ├── requirements.txt
