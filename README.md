@@ -25,7 +25,7 @@ Security Operations Centers (SOCs) are burdened by high-volume telemetry ingesti
 <!-- SCREENSHOT PLACEHOLDER 1 -->  
 
 ---
-![alt text](<Screenshot 2026-09-13 200438.png>)
+![alt text](<Screenshot 2026-09-13 204732.png>)
 ---
 
 
@@ -123,11 +123,11 @@ If an incoming alert shares any key pivot (`source_ip`, `user`, or `host`) with 
 <!-- SCREENSHOT PLACEHOLDER 2 -->
 
 ---
-![alt text](<Screenshot 2026-09-13 200450-1.png>)
+![alt text](<Screenshot 2026-09-13 204749.png>)
 ---
-![alt text](<Screenshot 2026-09-13 200504-1.png>)
+![alt text](<Screenshot 2026-09-13 204802.png>)
 ---
-![alt text](<Screenshot 2026-09-13 200522-1.png>)
+![alt text](<Screenshot 2026-09-13 204814.png>)
 ---
 
 <p align="center">
@@ -195,9 +195,9 @@ actions:
 <!-- SCREENSHOT PLACEHOLDER 3 -->
 
 ---
-![alt text](<Screenshot 2026-09-13 200533-1.png>)
+![alt text](<Screenshot 2026-09-13 204829.png>)
 ---
-![alt text](<Screenshot 2026-09-13 200547-1.png>)
+![alt text](<Screenshot 2026-09-13 204836.png>)
 ---
 
 <p align="center">
@@ -226,7 +226,7 @@ Every ingested alert type is enriched at runtime with industry-standard MITRE AT
 <!-- SCREENSHOT PLACEHOLDER 4 -->
 
 ---
-![alt text](<Screenshot 2026-09-13 200527-1.png>)
+![alt text](<Screenshot 2026-09-13 204824.png>)
 ---
 ---
 
